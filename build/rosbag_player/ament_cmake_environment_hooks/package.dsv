@@ -1,0 +1,4 @@
+source;share/rosbag_player/local_setup.bash
+source;share/rosbag_player/local_setup.dsv
+source;share/rosbag_player/local_setup.sh
+source;share/rosbag_player/local_setup.zsh

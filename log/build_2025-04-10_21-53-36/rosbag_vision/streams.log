@@ -1,0 +1,23 @@
+[0.008s] Invoking command in '/home/xu/ACE/Script_db3_to_mp4-main/build/rosbag_vision': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/local/bin/cmake --build /home/xu/ACE/Script_db3_to_mp4-main/build/rosbag_vision -- -j12 -l12
+[0.023s] Invoked command in '/home/xu/ACE/Script_db3_to_mp4-main/build/rosbag_vision' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/local/bin/cmake --build /home/xu/ACE/Script_db3_to_mp4-main/build/rosbag_vision -- -j12 -l12
+[0.040s] Invoking command in '/home/xu/ACE/Script_db3_to_mp4-main/build/rosbag_vision': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/local/bin/cmake --install /home/xu/ACE/Script_db3_to_mp4-main/build/rosbag_vision
+[0.042s] -- Install configuration: "Debug"
+[0.043s] -- Up-to-date: /home/xu/ACE/Script_db3_to_mp4-main/install/rosbag_vision/share/rosbag_vision/launch
+[0.043s] -- Installing: /home/xu/ACE/Script_db3_to_mp4-main/install/rosbag_vision/share/rosbag_vision/launch/run_rosbag.launch.py
+[0.043s] -- Up-to-date: /home/xu/ACE/Script_db3_to_mp4-main/install/rosbag_vision/share/ament_index/resource_index/package_run_dependencies/rosbag_vision
+[0.043s] -- Up-to-date: /home/xu/ACE/Script_db3_to_mp4-main/install/rosbag_vision/share/ament_index/resource_index/parent_prefix_path/rosbag_vision
+[0.043s] -- Up-to-date: /home/xu/ACE/Script_db3_to_mp4-main/install/rosbag_vision/share/rosbag_vision/environment/ament_prefix_path.sh
+[0.043s] -- Up-to-date: /home/xu/ACE/Script_db3_to_mp4-main/install/rosbag_vision/share/rosbag_vision/environment/ament_prefix_path.dsv
+[0.043s] -- Up-to-date: /home/xu/ACE/Script_db3_to_mp4-main/install/rosbag_vision/share/rosbag_vision/environment/path.sh
+[0.043s] -- Up-to-date: /home/xu/ACE/Script_db3_to_mp4-main/install/rosbag_vision/share/rosbag_vision/environment/path.dsv
+[0.043s] -- Up-to-date: /home/xu/ACE/Script_db3_to_mp4-main/install/rosbag_vision/share/rosbag_vision/local_setup.bash
+[0.043s] -- Up-to-date: /home/xu/ACE/Script_db3_to_mp4-main/install/rosbag_vision/share/rosbag_vision/local_setup.sh
+[0.043s] -- Up-to-date: /home/xu/ACE/Script_db3_to_mp4-main/install/rosbag_vision/share/rosbag_vision/local_setup.zsh
+[0.043s] -- Up-to-date: /home/xu/ACE/Script_db3_to_mp4-main/install/rosbag_vision/share/rosbag_vision/local_setup.dsv
+[0.043s] -- Installing: /home/xu/ACE/Script_db3_to_mp4-main/install/rosbag_vision/share/rosbag_vision/package.dsv
+[0.043s] -- Up-to-date: /home/xu/ACE/Script_db3_to_mp4-main/install/rosbag_vision/share/ament_index/resource_index/packages/rosbag_vision
+[0.043s] -- Up-to-date: /home/xu/ACE/Script_db3_to_mp4-main/install/rosbag_vision/share/rosbag_vision/cmake/ament_cmake_export_dependencies-extras.cmake
+[0.043s] -- Up-to-date: /home/xu/ACE/Script_db3_to_mp4-main/install/rosbag_vision/share/rosbag_vision/cmake/rosbag_visionConfig.cmake
+[0.043s] -- Up-to-date: /home/xu/ACE/Script_db3_to_mp4-main/install/rosbag_vision/share/rosbag_vision/cmake/rosbag_visionConfig-version.cmake
+[0.043s] -- Up-to-date: /home/xu/ACE/Script_db3_to_mp4-main/install/rosbag_vision/share/rosbag_vision/package.xml
+[0.044s] Invoked command in '/home/xu/ACE/Script_db3_to_mp4-main/build/rosbag_vision' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/local/bin/cmake --install /home/xu/ACE/Script_db3_to_mp4-main/build/rosbag_vision
