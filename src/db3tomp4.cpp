@@ -15,14 +15,22 @@ void on_exit([[maybe_unused]] int sig)
 
 RosbagPlayer::RosbagPlayer() : Node("rosbag_player_node")
 {
-    input_path = this->declare_parameter<std::string>("input_path", ""); 
-    output_path_ = this->declare_parameter<std::string>("output_path", ""); 
-    topic_name_ = this->declare_parameter<std::string>("topic_name", "/image_raw/compressed"); 
-    output_name_ = this->declare_parameter<std::string>("output_name", "output.mp4"); 
+    // Declare parameters for input, output paths, and topic name
+    input_path = this->declare_parameter<std::string>("input_path", "");
+    output_path_ = this->declare_parameter<std::string>("output_path", "");
+    topic_name_ = this->declare_parameter<std::string>("topic_name", "/image_raw/compressed");
+    output_name_ = this->declare_parameter<std::string>("output_name", "output.mp4");
+
+    // Initialize publisher
     image_publisher_ = this->create_publisher<sensor_msgs::msg::Image>("camera_image", rclcpp::SensorDataQoS());
+
+    // Set up signal handler
     signal(SIGINT, on_exit);
+
+    // Open the rosbag file
     reader_.open(input_path);
 
+    // Start a new thread for bag playback
     processing_thread_ = std::make_shared<std::thread>(&RosbagPlayer::play_bag, this);
 }
 
@@ -39,10 +47,6 @@ void RosbagPlayer::play_bag()
     RCLCPP_INFO(this->get_logger(), "Starting bag playback.");
     cv::startWindowThread();
     cv::namedWindow("bag_image", cv::WINDOW_KEEPRATIO);
-    cv::VideoWriter videowriter;
-
-    bool first_frame = true;
-    cv::Mat img;
 
     while (rclcpp::ok() && !stop_playback)
     {
@@ -50,73 +54,88 @@ void RosbagPlayer::play_bag()
         {
             auto start_time = std::chrono::high_resolution_clock::now();
             auto bag_message = reader_.read_next();
-            auto ros_time = rclcpp::Clock().now();
-
-            if (bag_message->topic_name == "topic_name_")
+            if (bag_message->topic_name == topic_name_)
             {
-                auto image_msg = std::make_shared<sensor_msgs::msg::CompressedImage>();
-                rclcpp::Serialization<sensor_msgs::msg::CompressedImage> serialization;
-                rclcpp::SerializedMessage serialized_msg(*bag_message->serialized_data);
-                serialization.deserialize_message(&serialized_msg, image_msg.get());
-                img = cv::imdecode(image_msg->data, cv::IMREAD_COLOR);
-                auto msg = cv_bridge::CvImage(std_msgs::msg::Header(), "bgr8", img).toImageMsg();
-                msg->header.stamp = ros_time;
-                image_publisher_->publish(*msg);
-                cv::imshow("bag_image", img);
-
-                if (first_frame)
-                {
-                    first_frame = false;
-                    videowriter.open(output_name_, cv::VideoWriter::fourcc('a', 'v', 'c', '1'), 60, img.size(), true);
-                    if (!videowriter.isOpened())
-                    {
-                        RCLCPP_ERROR(this->get_logger(), "Error opening video writer.");
-                        rclcpp::shutdown();
-                    }
-                }
-
-                videowriter.write(img);
-                cv::waitKey(1);
+                process_bag_message(*bag_message);
             }
-
-
             auto end_time = std::chrono::high_resolution_clock::now();
             auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
-            if ((duration < 100) && (duration > 1))
+            if (duration < 100 && duration > 1)
             {
                 std::this_thread::sleep_for(std::chrono::milliseconds(100) - std::chrono::milliseconds(duration)); // Fix the sleep_for call
             }
         }
         catch (const std::runtime_error &e)
         {
-            if (e.what() == std::string("Bag is at end. No next message."))
-            {
-                RCLCPP_INFO(this->get_logger(), "Bag file reached end. Stopping playback.");
-                break;
-            }
-            else
-            {
-                RCLCPP_ERROR(this->get_logger(), "Unexpected error: %s", e.what());
-                rclcpp::shutdown();
-            }
+            handle_bag_error(e);
         }
     }
 
+    handle_bag_end();
+}
+
+void RosbagPlayer::process_bag_message(const rosbag2_storage::SerializedBagMessage &bag_message)
+{
+    auto ros_time = rclcpp::Clock().now();
+    auto image_msg = std::make_shared<sensor_msgs::msg::CompressedImage>();
+    rclcpp::Serialization<sensor_msgs::msg::CompressedImage> serialization;
+    rclcpp::SerializedMessage serialized_msg(*bag_message.serialized_data);
+    serialization.deserialize_message(&serialized_msg, image_msg.get());
+
+    img_ = cv::imdecode(image_msg->data, cv::IMREAD_COLOR);
+
+    auto msg = cv_bridge::CvImage(std_msgs::msg::Header(), "bgr8", img_).toImageMsg();
+    msg->header.stamp = ros_time;
+
+    image_publisher_->publish(*msg);
+    cv::imshow("bag_image", img_);
+
+    if (first_frame_)
+    {
+        first_frame_ = false;
+        videowriter_.open(output_name_, cv::VideoWriter::fourcc('a', 'v', 'c', '1'), 60, img_.size(), true);
+        if (!videowriter_.isOpened())
+        {
+            RCLCPP_ERROR(this->get_logger(), "Error opening video writer.");
+            rclcpp::shutdown();
+        }
+    }
+
+    videowriter_.write(img_);
+    cv::waitKey(1);
+}
+
+void RosbagPlayer::handle_bag_end()
+{
     RCLCPP_INFO(this->get_logger(), "No more messages in the bag.");
-    RCLCPP_INFO(this->get_logger(), "Saving video ... Plz wait ...");
-    videowriter.release();
+    RCLCPP_INFO(this->get_logger(), "Saving video... Please wait...");
+    videowriter_.release();
     cv::destroyAllWindows();
-    RCLCPP_INFO(this->get_logger(), "Automatically save the video and exit!");
+    RCLCPP_INFO(this->get_logger(), "Automatically saved the video and exiting!");
     rclcpp::shutdown();
+}
+
+void RosbagPlayer::handle_bag_error(const std::runtime_error &e)
+{
+    if (e.what() == std::string("Bag is at end. No next message."))
+    {
+        RCLCPP_INFO(this->get_logger(), "Bag file reached end. Stopping playback.");
+    }
+    else
+    {
+        RCLCPP_ERROR(this->get_logger(), "Unexpected error: %s", e.what());
+        rclcpp::shutdown();
+    }
 }
 
 int main(int argc, char **argv)
 {
-    // 2.初始化ROS2客户端；
     rclcpp::init(argc, argv);
-    // 4.调用spin函数，传入自定义类对象指针；
+
+    // Create the rosbag player and start playback
     rclcpp::spin(std::make_shared<RosbagPlayer>());
-    // 5.释放资源
+
+    // Shutdown ROS
     rclcpp::shutdown();
 
     return 0;
