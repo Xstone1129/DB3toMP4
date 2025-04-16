@@ -1,1 +1,0 @@
-rclcpp;tf2;tf2_ros;tf2_sensor_msgs;rosbag2_cpp;rosbag2_storage;rosidl_generator_traits;rosidl_typesupport_cpp;rclcpp_components;OpenCV;cv_bridge;image_transport;sensor_msgs;std_msgs;vision_interface;rosidl_default_runtime;ament_lint_auto;ament_lint_common
