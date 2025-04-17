@@ -1,19 +1,22 @@
-<?xml version="1.0"?>
 <package format="2">
-  <name>db3tomp4</name>
-  <version>0.0.1</version>
-  <description>The db3tomp4 package</description>
+    <name>db3tomp4</name> <!-- 这个名字必须和 ros2 run 里的名字一致 -->
+    <version>0.0.1</version>
+    <description>Convert db3 bag to mp4</description>
   
-  <maintainer email="youremail@example.com">Your Name</maintainer>
+    <maintainer email="your@email.com">Your Name</maintainer>
+    <license>MIT</license>
   
-  <license>Apache-2.0</license>
-
-  <depend>rclcpp</depend>
-  <depend>sensor_msgs</depend>
-  <depend>cv_bridge</depend>
-  <depend>OpenCV</depend>
-  <depend>rosbag2_cpp</depend>
-  <depend>rosbag2_storage</depend>
-
-
-</package>
+    <buildtool_depend>ament_cmake</buildtool_depend>
+    <buildtool_depend>ament_cmake_auto</buildtool_depend>
+    <depend>rclcpp</depend>
+    <depend>sensor_msgs</depend>
+    <depend>cv_bridge</depend>
+    <depend>OpenCV</depend>
+    <depend>rosbag2_cpp</depend>
+    <depend>rosbag2_storage</depend>
+  
+    <export>
+      <build_type>ament_cmake</build_type>
+    </export>
+  </package>
+  
